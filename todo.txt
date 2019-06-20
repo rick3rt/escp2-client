@@ -1,0 +1,40 @@
+- droplet line black, other colors next to it. 
+- check headoffset. 
+
+
+
+===============================
+Ubuntu update 5.2.11 to 5.2.14
+
+remove old package of gutenprint:
+    $ sudo apt-get remove printer-driver-gutenprint
+
+remove libgutenprint files from /usr/lib/libgutenprint*
+    $ cd /usr/lib
+    $ sudo find /usr/lib -name libgutenprint* -type f -delete
+
+
+Install cups development packages
+    $ sudo apt-get install libcups2
+    $ sudo apt-get install libcups2-dev
+    $ sudo apt-get install libcupsimage2
+    $ sudo apt-get install libcupsimage2-dev
+
+Download and extract 5.2.14, open terminal in folder (gutenprint-5.2.14)
+    $ ./configure
+
+Check "Build CUPS: yes", make sure that the summary says: 
+    ================================================================
+    Features:
+        Build CUPS:                                 yes, installing in /usr
+            Build CUPS 1.2 enhancements:            yes
+            Build CUPS PPD files:                   no
+            Generate PS level 3 CUPS PPD files:     yes
+            Build genppd statically:                yes
+    ================================================================
+
+Install gutenprint
+    $ make clean
+    $ sudo make install
+
+Enjoy gutenprint 5.2.14!

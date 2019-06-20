@@ -1,0 +1,3 @@
+Make sure gutenprint is installed and the installation files are stored in the ~/gutenprint directory.
+
+To run the Parse script Perl needs to be installed
