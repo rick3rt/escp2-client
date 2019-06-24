@@ -8,7 +8,7 @@ import numpy as np
 
 
 # SPECIFY FILENAME, PRINTERNAME AND OUTPUTFOLDER
-filename = 'test1_p600'
+filename = 'test3_p600'
 printer = 'p600'  # one of the printers for which the header and footer files are available in the 'prns' folder
 outputfolder = '.'
 
@@ -46,25 +46,35 @@ unim = b'\x00'  # 01 uni, 00 bi
 
 
 # CREATE THE RASTERDATA
-vec = np.ones((nozzles, 1))     # init a vector with all 3's (large drops)
-vec = vec*3
+# create a matrix 180 by 50, with all ones. When providing this to esc_i_matrix, this would result in very closely printed droplets, with a spacing of 1/360" (I think!?)
+num_drops_hor = 50
+mat = np.ones((nozzles, 50))
+# set the last row to 3 for large drops
+mat[-1, :] = 3
+# set the row before before the last row to 2
+mat[-3, :] = 2
+
+# check output matrix
+print(mat)
+
 
 # Create the raster.
 # raster1: all color channels next to each other, printhead is expected to only make one passage
 # print all colors while holding the printhead on the same location.
 allColors = [black, lightBlack, lightLightBlack,
              cyan, lightCyan, magenta, lightMagenta, yellow]
+
 # move to x 1 inch location and:
 # let the printhead drop a vertical line for each color
 raster1 = b''
 x = 1       # one inch from left edge of paper
-y = 1.345       # some inches from top edge of paper
+y = 1.345       # some inches from top edge of paper (doesnt matter)
 raster1 += ESC_v(pmgmt, y)
 raster1 += ESC_dollar(hor, x)
-for color in allColors:
-    raster1 += ESC_i_matrix(color, vec, spacing=0, fan=0)
+# keep spacing at 0, fan = 0 and size=1 (size=1 is default)
+raster1 += ESC_i_matrix(black, mat, spacing=0, fan=0)
 
-# put all individual rasters together.
+# put all individual rasters together. and close with a 0c
 rasterdata = raster1 + b'\x0c'
 
 
