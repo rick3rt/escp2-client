@@ -15,9 +15,9 @@ os.chdir(os.path.join(dname, '..', '..'))
 
 
 # SPECIFY FILENAME, PRINTERNAME AND OUTPUTFOLDER
-filename = 'test_p600_low_res'
+filename = 'test_p600_high_res'
 # one of the printers for which the header and footer files are available in the 'prns' folder
-printer = 'p600'
+printer = 'p600_hr'
 outputfolder = 'output'
 
 # SET PARAMETERS
@@ -28,10 +28,10 @@ outputfolder = 'output'
 
 # Shown parameters should work with R2400 / P600 / R3000
 # unit parameters
-pmgmt = 720
-vert = 720
-hor = 720
-mbase = 2880
+pmgmt = 2880
+vert = 2880
+hor = 5760
+mbase = 5760
 nozzles = 180
 
 # set nozzle row numbers (def black = 00)
@@ -45,10 +45,7 @@ magenta = b'\x01'
 lightMagenta = b'\x11'
 yellow = b'\x04'
 
-# select dot size
-d = b'\x10'
-# set page method ID
-esc_m = ESC_m(b'\x20')
+
 # set uni or bi directional mode
 unim = b'\x00'  # 01 uni, 00 bi
 
@@ -65,8 +62,13 @@ y = 1       # one inch from top edge of paper
 # width of the matrix (number of droplets in printhead travel direction)
 width = 100
 matrix = np.zeros((nozzles, width))     # init the matrix as all zeros
-# set all rows of the matrix to 3's (large droplets), except for the last 2 rows
-matrix[0:58, :] = 3
+# set all rows of the matrix to 1's (small droplets), except for the last 4 rows
+matrix[0:nozzles - 4, :] = 1
+# set the last row to 3 for large drops
+matrix[-1, :] = 3
+# set the row before before the last row to 2
+matrix[-3, :] = 2
+# print(matrix[:, 1])
 
 # Create the raster,
 #   First set the x position of the printhead,
@@ -81,11 +83,10 @@ rasterdata = ESC_v(pmgmt, y) + raster + b'\x0c'
 header = load_prn_file('prns/' + printer + '/' + printer + '-header.prn')
 footer = load_prn_file('prns/' + printer + '/' + printer + '-footer.prn')
 
-
 # COMPOSE BODY
 body = ESC_Graph() + ESC_Units(pmgmt, vert, hor, mbase) + ESC_Kmode() + \
-    ESC_imode(n=b'\x00') + ESC_Umode(unim) + ESC_edot(d) + ESC_Dras(v=240 / 3, h=120 / 3) + \
-    ESC_C(pmgmt) + ESC_c(pmgmt) + ESC_S(pmgmt)  # + esc_m
+    ESC_imode(n=b'\x00') + ESC_Umode(unim) + ESC_edot() + ESC_Dras(b'\x50\x14') + \
+    ESC_C(pmgmt) + ESC_c(pmgmt) + ESC_S(pmgmt) + ESC_m(m=b'\x50')
 
 # COMBINE
 total = header + body + rasterdata + footer

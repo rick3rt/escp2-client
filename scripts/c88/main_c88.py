@@ -71,12 +71,9 @@ raster += ESC_dollar(hor, x) + ESC_i_matrix(black, matrix, spacing=0, fan=0)
 # First set the vertical position on the paper, then print the raster as composed in the previous step, add a linefeed
 rasterdata = ESC_v(pmgmt, y) + raster + b'\x0c'
 
-
 # LOAD HEADER AND FOOTER FOR SELECTED PRINTER
 header = load_prn_file('prns/' + printer + '/' + printer + '-header.prn')
 footer = load_prn_file('prns/' + printer + '/' + printer + '-footer.prn')
-# header = b''
-# footer = b''
 
 # COMPOSE BODY
 body = ESC_Graph() + ESC_Units(pmgmt, vert, hor, mbase) + ESC_Kmode() + \

@@ -89,7 +89,7 @@ def ESC_edot(d=b'\x12'):
     return total
 
 
-def ESC_Dras(v=120, h=40):
+def ESC_Dras(hexVals=None,v=120, h=40):
     """
     SET RASTER IMAGE RESOLUTION: ESC ( D
     """
@@ -98,9 +98,13 @@ def ESC_Dras(v=120, h=40):
     nH = b'\x00'
     rL = b'\x40'
     rH = b'\x38'
-    v = dec_hex(v)
-    h = dec_hex(h)
-    total = prefix + nL + nH + rL + rH + v + h
+
+    if hexVals:
+        total = prefix + nL + nH + rL + rH + hexVals
+    else:
+        v = dec_hex(v)
+        h = dec_hex(h)
+        total = prefix + nL + nH + rL + rH + v + h
     return total
 
 
