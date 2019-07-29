@@ -1,7 +1,7 @@
 # ==== IMPORT MODULES ====
 import binascii
 import math
-from hex_functions import *
+from hex_functions import str_hex, dec_hex, bin_hex
 
 
 # ==================================================================================================
