@@ -47,8 +47,8 @@ def split_prn(printername, filepath, outputfolder='prns'):
     # end load
 
     data_split = data_splitter(data)
-    for y in data_split:
-        print(y)
+    # for y in data_split:
+    #     print(y)
     # print(data_split)
 
     endbody = []
@@ -97,6 +97,7 @@ def split_prn(printername, filepath, outputfolder='prns'):
     f.write(footer)
     f.close()
     # end write footer
+    print('Splitting Done!')
 
 
 def print_hex(hbyte):
@@ -104,9 +105,14 @@ def print_hex(hbyte):
     print a hexadecimal byte in ascii
     """
     if hbyte == b'\x00':
-        return '00'
+        out = '00'
     else:
-        return binascii.b2a_hex(hbyte.rstrip(b'\x00')).decode('utf-8')
+        out = binascii.b2a_hex(hbyte).decode('utf-8')
+
+    def encrypt(string, length):
+        return ' '.join(string[i:i+length] for i in range(0,len(string),length))
+    
+    return encrypt(out,2)
 
 
 def str_hex(letter):
@@ -229,7 +235,7 @@ def body_viewer(data):
     c_escbU = ['ESC ( U ', '    (  U nL nH  P  V  H mL mH']
     c_escbK = ['ESC ( K ', '    (  K nL nH  m  n']
     c_escbi = ['ESC ( i ', '    (  i nL nH  n']
-    c_escU = ['ESC U ',  '    U  n']
+    c_escU = ['ESC U ', '    U  n']
     c_escbe = ['ESC ( e ', '    (  e nL nH  m  d']
     c_escbD = ['ESC ( D ', '    (  D nL nH rL rH  v  h']
     c_escbC = ['ESC ( C ', '    (  C nL nH m1 m2 m3 m4']

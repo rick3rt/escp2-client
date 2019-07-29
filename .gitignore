@@ -1,3 +1,11 @@
+# not the output folder
+output/
+# no pnm files
+*.pnm
+# no prn files, except when in prns folder
+*.prn
+!prns/**/*.prn
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
