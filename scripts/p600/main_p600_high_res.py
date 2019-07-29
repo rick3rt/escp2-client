@@ -52,7 +52,6 @@ unim = b'\x00'  # 01 uni, 00 bi
 
 # CREATE THE RASTERDATA
 # initialize empty byte string containing the rasterdata
-raster = b''
 
 # location of raster (in inches)
 x = 1       # one inch from left edge of paper
@@ -73,11 +72,16 @@ matrix[-3, :] = 2
 # Create the raster,
 #   First set the x position of the printhead,
 #   Print the matrix
-raster += ESC_dollar(hor, x) + ESC_i_matrix(black, matrix, spacing=0, fan=0)
+pages = []
+page1 = ESC_v(pmgmt, y) + ESC_dollar(hor, x) + ESC_i_matrix(black, matrix, spacing=0, fan=0)
+page2 = ESC_v(pmgmt, y) + ESC_dollar(hor, x) + ESC_i_matrix(cyan, matrix, spacing=0, fan=0)
+
+pages.append(page1)
+pages.append(page2)
 
 # First set the vertical position on the paper, then print the raster as composed in the previous step, add a linefeed
-rasterdata = ESC_v(pmgmt, y) + raster + b'\x0c'
-
+rasterdata = [page + formFeed() for page in pages]
+rasterdata = b''.join(rasterdata)
 
 # LOAD HEADER AND FOOTER FOR SELECTED PRINTER
 header = load_prn_file('prns/' + printer + '/' + printer + '-header.prn')

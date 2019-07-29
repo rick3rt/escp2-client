@@ -89,7 +89,7 @@ def ESC_edot(d=b'\x12'):
     return total
 
 
-def ESC_Dras(hexVals=None,v=120, h=40):
+def ESC_Dras(hexVals=None, v=120, h=40):
     """
     SET RASTER IMAGE RESOLUTION: ESC ( D
     """
@@ -184,8 +184,13 @@ def ESC_m(m=b'\x21'):
     return total
 
 
-# ===============================================
-# ===============================================
+def formFeed():
+    """
+    Form feed go to next page
+    """
+    return b'\x0C'
+
+
 # ===============================================
 
 
@@ -258,9 +263,6 @@ def ESC_slash(hor, m=0):
     return total
 
 
-# ===============================================
-# ===============================================
-# ===============================================
 # ===============================================
 
 
@@ -501,26 +503,26 @@ def ESC_i_cust(r=b'\x60', ndrops=100):
     b = b'\x02'
 
     # 1 byte describes 4 droplets
-    n = math.ceil(ndrops/4)
+    n = math.ceil(ndrops / 4)
     m = 1
 
     # run lenght encoding
-    rle_full = math.floor(n/128)
-    ndrops_rest = ndrops - rle_full*128*4
+    rle_full = math.floor(n / 128)
+    ndrops_rest = ndrops - rle_full * 128 * 4
 
-    rle_mid = math.floor(ndrops_rest/4)
-    ndrops_left = ndrops_rest - rle_mid*4
+    rle_mid = math.floor(ndrops_rest / 4)
+    ndrops_left = ndrops_rest - rle_mid * 4
 
-    rle_end_bin = ndrops_left*'11'+(4-ndrops_left)*'00'
+    rle_end_bin = ndrops_left * '11' + (4 - ndrops_left) * '00'
 
     # Compose the image data
     if rle_mid > 0 and ndrops_left <= 0:
-        image = rle_full*b'\x81\xff' + dec_hex(257-rle_mid)+b'\xff'
+        image = rle_full * b'\x81\xff' + dec_hex(257 - rle_mid) + b'\xff'
     elif rle_mid > 0 and ndrops_left > 0:
-        image = rle_full*b'\x81\xff' + \
-            dec_hex(257-rle_mid)+b'\xff' + b'\x00' + bin_hex(rle_end_bin)
+        image = rle_full * b'\x81\xff' + \
+            dec_hex(257 - rle_mid) + b'\xff' + b'\x00' + bin_hex(rle_end_bin)
     elif rle_mid <= 0 and ndrops_left > 0:
-        image = rle_full*b'\x81\xff' + b'\x00' + bin_hex(rle_end_bin)
+        image = rle_full * b'\x81\xff' + b'\x00' + bin_hex(rle_end_bin)
 
     nL = dec_hex(n % 256)
     nH = dec_hex(n / 256)
